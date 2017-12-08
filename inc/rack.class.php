@@ -524,7 +524,7 @@ class Rack extends CommonDBTM {
          )
       );
 
-      echo "<div id='switchview'>";
+      echo "<div id='switchview' class='roomview'>";
       echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
       echo "<i id='sviewgraph' class='pointer fa fa-th-large selected' title='".__('View graphical representation')."'></i>";
       echo "</div>";
@@ -686,8 +686,8 @@ class Rack extends CommonDBTM {
          $('#viewgraph .rack-add').on('click', function(){
             var _this = $(this);
             if (_this.find('div').length == 0) {
-               var _x = _this.data('x');
-               var _y = _this.data('y');
+               var _x = _this.parent().data('x');
+               var _y = _this.parent().data('y');
                window.location = '{$rack->getFormURL()}?room={$room->getID()}&position=' + _x + ',' + _y;
             }
          });
