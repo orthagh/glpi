@@ -227,6 +227,9 @@ class Item_Rack extends CommonDBRelation {
                $gs_item['half_rack'] = true;
                $gs_item['width'] = 1;
                $row['position'].= "_".$gs_item['x'];
+               if ($row['orientation'] == Rack::REAR) {
+                  $gs_item['x'] = $row['hpos'] == 2 ? 0 : 1;
+               }
             }
          } else {
             $item->model = null;
@@ -582,7 +585,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation')."</label></td>";
+      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation (front rack point of view)')."</label></td>";
       echo "<td >";
       Dropdown::showFromArray(
          'orientation', [
