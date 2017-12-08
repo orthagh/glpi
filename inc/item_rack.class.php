@@ -422,14 +422,13 @@ class Item_Rack extends CommonDBRelation {
                      hpos: getHpos(item.x, is_half_rack, is_rack_rear),
                   }, function(answer) {
                      var answer = jQuery.parseJSON(answer);
-                     displayAjaxMessageAfterRedirect();
 
                      // revert to old position
                      if (!answer.status) {
                         dirty = true;
                         grid.move(item.el, x_before_drag, y_before_drag);
                         dirty = false;
-
+                        displayAjaxMessageAfterRedirect();
                      } else {
                         // move other side if needed
                         var other_side_cls = $(item.el).hasClass('rear')
