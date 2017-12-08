@@ -453,12 +453,13 @@ class Item_Rack extends CommonDBRelation {
                });
             })
             .on('dragstart', function(event, ui) {
-               var grid = this;
+               var grid    = this;
                var element = $(event.target);
+               var node    = element.data('_gridstack_node')
 
                // store position before drag
-               x_before_drag = Number(element.data('gs-x'));
-               y_before_drag = Number(element.data('gs-y'));
+               x_before_drag = Number(node.x);
+               y_before_drag = Number(node.y);
 
                // disable qtip
                element.qtip('hide', true);
