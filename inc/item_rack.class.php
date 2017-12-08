@@ -249,7 +249,7 @@ class Item_Rack extends CommonDBRelation {
                $flip_orientation = (int) !((bool) $row['orientation']);
                if ($gs_item['half_rack']) {
                   $gs_item['x'] = (int) !((bool) $gs_item['x']);
-                  $row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
+                  //$row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
                }
                $data[$flip_orientation][$row['position']] = [
                   'row'     => $row,
@@ -381,19 +381,17 @@ class Item_Rack extends CommonDBRelation {
          var x_before_drag = 0;
          var y_before_drag = 0;
          var dirty = false;
-         var getHpos = function(x, half_rack, is_rear) {
-            if (!half_rack) {
+         var getHpos = function(x, is_half_rack, is_rack_rear) {
+            if (!is_half_rack) {
                return 0;
-            } else if (x == 0 && !is_rear) {
+            } else if (x == 0 && !is_rack_rear) {
                return 1;
-            } else if (x == 0 && is_rear) {
+            } else if (x == 0 && is_rack_rear) {
                return 2;
-            } else if (x == 1 && is_rear) {
+            } else if (x == 1 && is_rack_rear) {
                return 1;
-            } else if (x == 1 && !is_rear) {
+            } else if (x == 1 && !is_rack_rear) {
                return 2;
-            } else {
-               return 0;
             }
          };
 
@@ -409,9 +407,10 @@ class Item_Rack extends CommonDBRelation {
                   return;
                }
                var grid = $(event.target).data('gridstack');
+               var is_rack_rear = $(grid.container).parents('.racks_col').index() != 0;
                $.each(items, function(index, item) {
                   var is_half_rack = item.el.hasClass('half_rack');
-                  var is_rear      = item.el.hasClass('rear');
+                  var is_el_rear   = item.el.hasClass('rear');
                   var new_pos      = {$rack->fields['number_units']}
                                      - item.y
                                      - item.height
@@ -420,7 +419,7 @@ class Item_Rack extends CommonDBRelation {
                      id: item.id,
                      action: 'move_item',
                      position: new_pos,
-                     hpos: getHpos(item.x, is_half_rack, is_rear),
+                     hpos: getHpos(item.x, is_half_rack, is_rack_rear),
                   }, function(answer) {
                      var answer = jQuery.parseJSON(answer);
                      displayAjaxMessageAfterRedirect();
