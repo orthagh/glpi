@@ -676,6 +676,20 @@ class Rack extends CommonDBTM {
             echo "<a href='".$rack->getLinkURL()."'
                      style='color: $fgcolor'>".
                      $cell['name']."</a>";
+            echo "<span class='tipcontent'>";
+            echo "<span>
+               <label>".__('name').":</label>".
+               $cell['name']."
+            </span>
+            <span>
+               <label>".__('serial').":</label>".
+               $cell['serial']."
+            </span>
+            <span>
+               <label>".__('Inventory number').":</label>".
+               $cell['otherserial']."
+            </span>";
+            echo "</span>";
             echo "</div>"; // .grid-stack-item-content
             echo "</div>"; // .grid-stack-item
          }
@@ -695,7 +709,7 @@ class Rack extends CommonDBTM {
       echo "<div class='sep'></div>";
       echo "</div>"; // #viewgraph
 
-      $rack_add_tip = __s('Insert an rack here');
+      $rack_add_tip = __s('Insert a rack here');
       $js = <<<JAVASCRIPT
       $(function(){
          $('#sviewlist').on('click', function(){
@@ -749,7 +763,6 @@ class Rack extends CommonDBTM {
             $('.indexes-y').append('<li>' + y + '</li>');
          }
          // append cells for adding racks
-         console.log({$cols}, {$rows});
          for (var y = 0; y < {$rows}; y++) {
             for (var x = 0; x < {$cols}; x++) {
                $('.racks_add')
@@ -810,17 +823,22 @@ class Rack extends CommonDBTM {
             }
          });
 
-         $('#viewgraph table div').each(function() {
-            var _this = $(this);
-            _this.qtip({
-               position: { viewport: $(window) },
-               content: {
-                  text: _this.find('.tipcontent')
-               },
-               style: {
-                  classes: 'qtip-shadow qtip-bootstrap'
-               }
-            });
+         $('#viewgraph .cell_add, #viewgraph .grid-stack-item').each(function() {
+            var tipcontent = $(this).find('.tipcontent');
+            if (tipcontent.length) {
+               $(this).qtip({
+                  position: {
+                     my: 'left center',
+                     at: 'right center',
+                  },
+                  content: {
+                     text: tipcontent
+                  },
+                  style: {
+                     classes: 'qtip-shadow qtip-bootstrap rack_tipcontent'
+                  }
+               });
+            }
          });
       });
 JAVASCRIPT;
