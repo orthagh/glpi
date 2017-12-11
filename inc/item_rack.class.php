@@ -307,7 +307,7 @@ class Item_Rack extends CommonDBRelation {
          </div>
       </div>
       <div class="sep"></div>';
-
+      echo "<div id='grid-dialog'></div>";
       echo "</div>";
 
       $rack_add_tip = __s('Insert an item here');
@@ -375,7 +375,23 @@ class Item_Rack extends CommonDBRelation {
                            : 1); // rear
             var current_grid = $(this).parents('.grid-stack').data('gridstack');
 
-            window.location = '{$link->getFormURL()}?rack={$rack->getID()}&orientation=' + parent + '&unit=' + index;
+            $.ajax({
+                  url : "{$link->getFormURL()}",
+                  data: {
+                     racks_id: {$rack->getID()},
+                     orientation: parent,
+                     unit: index,
+                     ajax: true,
+                  },
+                  success: function(data) {
+                     $('#grid-dialog')
+                        .html(data)
+                        .dialog({
+                           modal: true,
+                           width: 'auto'
+                        });
+                  }
+               });
          });
 
          var x_before_drag = 0;
@@ -584,7 +600,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation (front rack point of view)')."</label></td>";
+      echo "<td><label for='dropdown_orientation$rand'>".__('Orientation')."</label></td>";
       echo "<td >";
       Dropdown::showFromArray(
          'orientation', [
@@ -608,7 +624,7 @@ JAVASCRIPT;
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td><label for='dropdown_hpos$rand'>".__('Horizontal position')."</label></td>";
+      echo "<td><label for='dropdown_hpos$rand'>".__('Horizontal position (from rack point of view)')."</label></td>";
       echo "<td>";
       Dropdown::showFromArray(
          'hpos',

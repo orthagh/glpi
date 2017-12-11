@@ -707,6 +707,7 @@ class Rack extends CommonDBTM {
       echo "</div>"; //.grid-stack
       echo "</div>"; //.grid-room
       echo "<div class='sep'></div>";
+      echo "<div id='grid-dialog'></div>";
       echo "</div>"; // #viewgraph
 
       $rack_add_tip = __s('Insert a rack here');
@@ -819,7 +820,23 @@ class Rack extends CommonDBTM {
             if (_this.find('div').length == 0) {
                var _x = _this.data('x');
                var _y = _this.data('y');
-               window.location = '{$rack->getFormURL()}?room={$room->getID()}&position=' + _x + ',' + _y;
+
+               $.ajax({
+                  url : "{$rack->getFormURL()}",
+                  data: {
+                     room: {$room->getID()},
+                     position: _x + ',' + _y,
+                     ajax: true
+                  },
+                  success: function(data) {
+                     $('#grid-dialog')
+                        .html(data)
+                        .dialog({
+                           modal: true,
+                           width: 'auto'
+                        });
+                  }
+               });
             }
          });
 
