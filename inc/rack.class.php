@@ -524,7 +524,7 @@ class Rack extends CommonDBTM {
          )
       );
 
-      echo "<div id='switchview' class='roomview'>";
+      echo "<div id='switchview'>";
       echo "<i id='sviewlist' class='pointer fa fa-list-alt' title='".__('View as list')."'></i>";
       echo "<i id='sviewgraph' class='pointer fa fa-th-large selected' title='".__('View graphical representation')."'></i>";
       echo "</div>";
@@ -619,7 +619,7 @@ class Rack extends CommonDBTM {
       }
 
       if (count($outbound)) {
-         echo "<table><thead><th colspan='10' class='redips-mark'>";
+         echo "<table><thead><th colspan='10'>";
          echo __('Following elements are out of room bounds');
          echo "</th></thead><tbody>";
          echo "<tr>";

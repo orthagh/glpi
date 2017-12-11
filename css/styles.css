@@ -4651,7 +4651,7 @@ tr.linked-template td:not(.top) {
 }
 
 
-#viewgraph.roomview a.fa, #viewgraph.roomview a.fa:link, #viewgraph.roomview a .fa {
+#viewgraph .rooms a.fa, #viewgraph .rooms a.fa:link, #viewgraph .rooms a .fa {
    color: white;
    position: absolute;
    right: 0;
@@ -4659,7 +4659,7 @@ tr.linked-template td:not(.top) {
    padding: .5em;
 }
 
-#viewgraph.roomview a.itemlink .fa {
+#viewgraph .rooms a.itemlink .fa {
    right: 1.2em;
 }
 
