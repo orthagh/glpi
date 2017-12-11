@@ -42,16 +42,26 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_POST['action'])) {
-   $item_rack = new Item_Rack;
-   $item_rack->getFromDB((int) $_POST['id']);
-   $answer    = [];
+   $answer = [];
 
    switch ($_POST['action']) {
       case 'move_item':
+         $item_rack = new Item_Rack;
+         $item_rack->getFromDB((int) $_POST['id']);
          $answer['status'] = $item_rack->update([
             'id'       => (int) $_POST['id'],
             'position' => (int) $_POST['position'],
             'hpos'     => (int) $_POST['hpos'],
+         ]);
+         break;
+
+      case 'move_rack':
+         $rack = new Rack;
+         $rack->getFromDB((int) $_POST['id']);
+         $answer['status'] = $rack->update([
+            'id'         => (int) $_POST['id'],
+            'dcrooms_id' => (int) $_POST['dcrooms_id'],
+            'position'   => (int) $_POST['x'].",".(int) $_POST['y'],
          ]);
          break;
    }
