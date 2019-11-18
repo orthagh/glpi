@@ -1070,6 +1070,8 @@ class SavedSearch extends CommonDBTM {
    static function showSaveButton($type, $itemtype = 0) {
       global $CFG_GLPI;
 
+      $itemtype = addslashes($itemtype);
+
       echo "<a href='#' onClick=\"savesearch.dialog('open'); return false;\"
              class='fa fa-star bookmark_record save' title='".__s('Save current search')."'>";
       echo "<span class='sr-only'>".__s('Save current search')."</span>";

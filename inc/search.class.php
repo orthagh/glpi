@@ -1437,8 +1437,9 @@ class Search {
                }
             }
             foreach ($data['data']['cols'] as $val) {
-               $newrow[$val['itemtype'] . '_' . $val['id']]['displayname'] = self::giveItem(
-                  $val['itemtype'],
+               $cl_itemtype = self::getCleanedItemtype($val['itemtype']);
+               $newrow[$cl_itemtype . '_' . $val['id']]['displayname'] = self::giveItem(
+                  $cl_itemtype,
                   $val['id'],
                   $newrow
                );
@@ -1544,7 +1545,7 @@ class Search {
                   $search_config_bottom .= str_replace('%id', 'search_config_bottom', $options_link);
 
                   $pref_url = $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=".
-                              $data['itemtype'];
+                              addslashes($data['itemtype']);
                   $search_config_top .= Ajax::createIframeModalWindow(
                      'search_config_top',
                      $pref_url,
@@ -1781,7 +1782,8 @@ class Search {
 
                // Print other toview items
                foreach ($data['data']['cols'] as $col) {
-                  $colkey = "{$col['itemtype']}_{$col['id']}";
+                  $cl_itemtype = self::getCleanedItemtype($col['itemtype']);
+                  $colkey = "{$cl_itemtype}_{$col['id']}";
                   if (!$col['meta']) {
                      echo self::showItem($data['display_type'], $row[$colkey]['displayname'],
                                           $item_num, $row_num,
@@ -2246,6 +2248,8 @@ class Search {
       $p['actionname']   = 'search';
       $p['actionvalue']  = _sx('button', 'Search');
 
+      $cl_itemtype = self::getCleanedItemtype($itemtype);
+
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
@@ -2257,8 +2261,8 @@ class Search {
          $main_block_class = "sub_criteria";
       }
       echo "<div id='searchcriteria' class='$main_block_class'>";
-      $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
-      $searchcriteriatableid = 'criteriatable'.strtolower($itemtype).mt_rand();
+      $nbsearchcountvar      = 'nbcriteria'.strtolower($cl_itemtype).mt_rand();
+      $searchcriteriatableid = 'criteriatable'.strtolower($cl_itemtype).mt_rand();
       // init criteria count
       echo Html::scriptBlock("
          var $nbsearchcountvar = ".count($p['criteria']).";
@@ -2333,7 +2337,7 @@ class Search {
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_criteria',
-               'itemtype': '$itemtype',
+               'itemtype': '$cl_itemtype',
                'num': $nbsearchcountvar,
                'p': $json_p
             })
@@ -2347,7 +2351,7 @@ class Search {
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_meta_criteria',
-               'itemtype': '$itemtype',
+               'itemtype': '$cl_itemtype',
                'meta': true,
                'num': $nbsearchcountvar,
                'p': $json_p
@@ -2362,7 +2366,7 @@ class Search {
             event.preventDefault();
             $.post('{$CFG_GLPI['root_doc']}/ajax/search.php', {
                'action': 'display_criteria_group',
-               'itemtype': '$itemtype',
+               'itemtype': '$cl_itemtype',
                'meta': true,
                'num': $nbsearchcountvar,
                'p': $json_p
@@ -3176,12 +3180,11 @@ JAVASCRIPT;
       if ($order != "ASC") {
          $order = "DESC";
       }
-      $searchopt = &self::getOptions($itemtype);
-
-      $table     = $searchopt[$ID]["table"];
-      $field     = $searchopt[$ID]["field"];
-
-      $addtable = '';
+      $searchopt   = &self::getOptions($itemtype);
+      $cl_itemtype = self::getCleanedItemtype($itemtype);
+      $table       = $searchopt[$ID]["table"];
+      $field       =  $searchopt[$ID]["field"];
+      $addtable    = '';
 
       if (($table != getTableForItemType($itemtype))
           && (getTableNameForForeignKeyField($searchopt[$ID]["linkfield"]) != $table)) {
@@ -3197,7 +3200,7 @@ JAVASCRIPT;
       }
 
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
-         return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
+         return " ORDER BY ITEM_{$cl_itemtype}_{$ID} $order ";
       }
 
       // Plugin can override core definition for its type
@@ -3280,7 +3283,7 @@ JAVASCRIPT;
          }
       }
 
-      return " ORDER BY ITEM_{$itemtype}_{$ID} $order ";
+      return " ORDER BY ITEM_{$cl_itemtype}_{$ID} $order ";
    }
 
 
@@ -3381,7 +3384,8 @@ JAVASCRIPT;
       $field       = $searchopt[$ID]["field"];
       $addtable    = "";
       $addtable2   = "";
-      $NAME        = "ITEM_{$itemtype}_{$ID}";
+      $cl_itemtype = self::getCleaneditemtype($itemtype);
+      $NAME        = "ITEM_{$cl_itemtype}_{$ID}";
       $complexjoin = '';
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -6427,7 +6431,7 @@ JAVASCRIPT;
     * @param $forcebookmark            force trying to load parameters from default bookmark:
     *                                  used for global search (false by default)
     *
-    * @return parsed params array
+    * @return array parsed params
    **/
    static function manageParams($itemtype, $params = [], $usesession = true,
                                 $forcebookmark = false) {
@@ -6659,135 +6663,137 @@ JAVASCRIPT;
     * @param $itemtype
     * @param $withplugins boolean get search options from plugins (true by default)
     *
-    * @return the reference to  array of search options for the given item type
+    * @return array the reference to  array of search options for the given item type
    **/
    static function &getOptions($itemtype, $withplugins = true) {
       global $CFG_GLPI;
 
       $item = null;
 
-      if (!isset(self::$search[$itemtype])) {
+      $cl_itemtype = self::getCleanedItemtype($itemtype);
+
+      if (!isset(self::$search[$cl_itemtype])) {
          // standard type first
          switch ($itemtype) {
             case 'Internet' :
-               self::$search[$itemtype]['common']            = __('Characteristics');
+               self::$search[$cl_itemtype]['common']            = __('Characteristics');
 
-               self::$search[$itemtype][1]['table']          = 'networkport_types';
-               self::$search[$itemtype][1]['field']          = 'name';
-               self::$search[$itemtype][1]['name']           = __('Name');
-               self::$search[$itemtype][1]['datatype']       = 'itemlink';
-               self::$search[$itemtype][1]['searchtype']     = 'contains';
+               self::$search[$cl_itemtype][1]['table']          = 'networkport_types';
+               self::$search[$cl_itemtype][1]['field']          = 'name';
+               self::$search[$cl_itemtype][1]['name']           = __('Name');
+               self::$search[$cl_itemtype][1]['datatype']       = 'itemlink';
+               self::$search[$cl_itemtype][1]['searchtype']     = 'contains';
 
-               self::$search[$itemtype][2]['table']          = 'networkport_types';
-               self::$search[$itemtype][2]['field']          = 'id';
-               self::$search[$itemtype][2]['name']           = __('ID');
-               self::$search[$itemtype][2]['searchtype']     = 'contains';
+               self::$search[$cl_itemtype][2]['table']          = 'networkport_types';
+               self::$search[$cl_itemtype][2]['field']          = 'id';
+               self::$search[$cl_itemtype][2]['name']           = __('ID');
+               self::$search[$cl_itemtype][2]['searchtype']     = 'contains';
 
-               self::$search[$itemtype][31]['table']         = 'glpi_states';
-               self::$search[$itemtype][31]['field']         = 'completename';
-               self::$search[$itemtype][31]['name']          = __('Status');
+               self::$search[$cl_itemtype][31]['table']         = 'glpi_states';
+               self::$search[$cl_itemtype][31]['field']         = 'completename';
+               self::$search[$cl_itemtype][31]['name']          = __('Status');
 
-               self::$search[$itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
+               self::$search[$cl_itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
                break;
 
             case 'AllAssets' :
-               self::$search[$itemtype]['common']            = __('Characteristics');
+               self::$search[$cl_itemtype]['common']            = __('Characteristics');
 
-               self::$search[$itemtype][1]['table']          = 'asset_types';
-               self::$search[$itemtype][1]['field']          = 'name';
-               self::$search[$itemtype][1]['name']           = __('Name');
-               self::$search[$itemtype][1]['datatype']       = 'itemlink';
-               self::$search[$itemtype][1]['searchtype']     = 'contains';
+               self::$search[$cl_itemtype][1]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][1]['field']          = 'name';
+               self::$search[$cl_itemtype][1]['name']           = __('Name');
+               self::$search[$cl_itemtype][1]['datatype']       = 'itemlink';
+               self::$search[$cl_itemtype][1]['searchtype']     = 'contains';
 
-               self::$search[$itemtype][2]['table']          = 'asset_types';
-               self::$search[$itemtype][2]['field']          = 'id';
-               self::$search[$itemtype][2]['name']           = __('ID');
-               self::$search[$itemtype][2]['searchtype']     = 'contains';
+               self::$search[$cl_itemtype][2]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][2]['field']          = 'id';
+               self::$search[$cl_itemtype][2]['name']           = __('ID');
+               self::$search[$cl_itemtype][2]['searchtype']     = 'contains';
 
-               self::$search[$itemtype][31]['table']         = 'glpi_states';
-               self::$search[$itemtype][31]['field']         = 'completename';
-               self::$search[$itemtype][31]['name']          = __('Status');
+               self::$search[$cl_itemtype][31]['table']         = 'glpi_states';
+               self::$search[$cl_itemtype][31]['field']         = 'completename';
+               self::$search[$cl_itemtype][31]['name']          = __('Status');
 
-               self::$search[$itemtype] += Location::getSearchOptionsToAdd();
+               self::$search[$cl_itemtype] += Location::getSearchOptionsToAdd();
 
-               self::$search[$itemtype][5]['table']          = 'asset_types';
-               self::$search[$itemtype][5]['field']          = 'serial';
-               self::$search[$itemtype][5]['name']           = __('Serial number');
+               self::$search[$cl_itemtype][5]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][5]['field']          = 'serial';
+               self::$search[$cl_itemtype][5]['name']           = __('Serial number');
 
-               self::$search[$itemtype][6]['table']          = 'asset_types';
-               self::$search[$itemtype][6]['field']          = 'otherserial';
-               self::$search[$itemtype][6]['name']           = __('Inventory number');
+               self::$search[$cl_itemtype][6]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][6]['field']          = 'otherserial';
+               self::$search[$cl_itemtype][6]['name']           = __('Inventory number');
 
-               self::$search[$itemtype][16]['table']         = 'asset_types';
-               self::$search[$itemtype][16]['field']         = 'comment';
-               self::$search[$itemtype][16]['name']          = __('Comments');
-               self::$search[$itemtype][16]['datatype']      = 'text';
+               self::$search[$cl_itemtype][16]['table']         = 'asset_types';
+               self::$search[$cl_itemtype][16]['field']         = 'comment';
+               self::$search[$cl_itemtype][16]['name']          = __('Comments');
+               self::$search[$cl_itemtype][16]['datatype']      = 'text';
 
-               self::$search[$itemtype][70]['table']         = 'glpi_users';
-               self::$search[$itemtype][70]['field']         = 'name';
-               self::$search[$itemtype][70]['name']          = __('User');
+               self::$search[$cl_itemtype][70]['table']         = 'glpi_users';
+               self::$search[$cl_itemtype][70]['field']         = 'name';
+               self::$search[$cl_itemtype][70]['name']          = __('User');
 
-               self::$search[$itemtype][7]['table']          = 'asset_types';
-               self::$search[$itemtype][7]['field']          = 'contact';
-               self::$search[$itemtype][7]['name']           = __('Alternate username');
-               self::$search[$itemtype][7]['datatype']       = 'string';
+               self::$search[$cl_itemtype][7]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][7]['field']          = 'contact';
+               self::$search[$cl_itemtype][7]['name']           = __('Alternate username');
+               self::$search[$cl_itemtype][7]['datatype']       = 'string';
 
-               self::$search[$itemtype][8]['table']          = 'asset_types';
-               self::$search[$itemtype][8]['field']          = 'contact_num';
-               self::$search[$itemtype][8]['name']           = __('Alternate username number');
-               self::$search[$itemtype][8]['datatype']       = 'string';
+               self::$search[$cl_itemtype][8]['table']          = 'asset_types';
+               self::$search[$cl_itemtype][8]['field']          = 'contact_num';
+               self::$search[$cl_itemtype][8]['name']           = __('Alternate username number');
+               self::$search[$cl_itemtype][8]['datatype']       = 'string';
 
-               self::$search[$itemtype][71]['table']         = 'glpi_groups';
-               self::$search[$itemtype][71]['field']         = 'completename';
-               self::$search[$itemtype][71]['name']          = __('Group');
+               self::$search[$cl_itemtype][71]['table']         = 'glpi_groups';
+               self::$search[$cl_itemtype][71]['field']         = 'completename';
+               self::$search[$cl_itemtype][71]['name']          = __('Group');
 
-               self::$search[$itemtype][19]['table']         = 'asset_types';
-               self::$search[$itemtype][19]['field']         = 'date_mod';
-               self::$search[$itemtype][19]['name']          = __('Last update');
-               self::$search[$itemtype][19]['datatype']      = 'datetime';
-               self::$search[$itemtype][19]['massiveaction'] = false;
+               self::$search[$cl_itemtype][19]['table']         = 'asset_types';
+               self::$search[$cl_itemtype][19]['field']         = 'date_mod';
+               self::$search[$cl_itemtype][19]['name']          = __('Last update');
+               self::$search[$cl_itemtype][19]['datatype']      = 'datetime';
+               self::$search[$cl_itemtype][19]['massiveaction'] = false;
 
-               self::$search[$itemtype][23]['table']         = 'glpi_manufacturers';
-               self::$search[$itemtype][23]['field']         = 'name';
-               self::$search[$itemtype][23]['name']          = __('Manufacturer');
+               self::$search[$cl_itemtype][23]['table']         = 'glpi_manufacturers';
+               self::$search[$cl_itemtype][23]['field']         = 'name';
+               self::$search[$cl_itemtype][23]['name']          = __('Manufacturer');
 
-               self::$search[$itemtype][24]['table']         = 'glpi_users';
-               self::$search[$itemtype][24]['field']         = 'name';
-               self::$search[$itemtype][24]['linkfield']     = 'users_id_tech';
-               self::$search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
-               self::$search[$itemtype][24]['condition']     = ['is_assign' => 1];
+               self::$search[$cl_itemtype][24]['table']         = 'glpi_users';
+               self::$search[$cl_itemtype][24]['field']         = 'name';
+               self::$search[$cl_itemtype][24]['linkfield']     = 'users_id_tech';
+               self::$search[$cl_itemtype][24]['name']          = __('Technician in charge of the hardware');
+               self::$search[$cl_itemtype][24]['condition']     = ['is_assign' => 1];
 
-               self::$search[$itemtype][49]['table']          = 'glpi_groups';
-               self::$search[$itemtype][49]['field']          = 'completename';
-               self::$search[$itemtype][49]['linkfield']      = 'groups_id_tech';
-               self::$search[$itemtype][49]['name']           = __('Group in charge of the hardware');
-               self::$search[$itemtype][49]['condition']      = ['is_assign' => 1];
-               self::$search[$itemtype][49]['datatype']       = 'dropdown';
+               self::$search[$cl_itemtype][49]['table']          = 'glpi_groups';
+               self::$search[$cl_itemtype][49]['field']          = 'completename';
+               self::$search[$cl_itemtype][49]['linkfield']      = 'groups_id_tech';
+               self::$search[$cl_itemtype][49]['name']           = __('Group in charge of the hardware');
+               self::$search[$cl_itemtype][49]['condition']      = ['is_assign' => 1];
+               self::$search[$cl_itemtype][49]['datatype']       = 'dropdown';
 
-               self::$search[$itemtype][80]['table']         = 'glpi_entities';
-               self::$search[$itemtype][80]['field']         = 'completename';
-               self::$search[$itemtype][80]['name']          = __('Entity');
+               self::$search[$cl_itemtype][80]['table']         = 'glpi_entities';
+               self::$search[$cl_itemtype][80]['field']         = 'completename';
+               self::$search[$cl_itemtype][80]['name']          = __('Entity');
                break;
 
             default :
                if ($item = getItemForItemtype($itemtype)) {
-                  self::$search[$itemtype] = $item->searchOptions();
+                  self::$search[$cl_itemtype] = $item->searchOptions();
                }
                break;
          }
 
          if (Session::getLoginUserID()
              && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
-            self::$search[$itemtype]['tracking']          = __('Assistance');
+            self::$search[$cl_itemtype]['tracking']          = __('Assistance');
 
-            self::$search[$itemtype][60]['table']         = 'glpi_tickets';
-            self::$search[$itemtype][60]['field']         = 'id';
-            self::$search[$itemtype][60]['datatype']      = 'count';
-            self::$search[$itemtype][60]['name']          = _x('quantity', 'Number of tickets');
-            self::$search[$itemtype][60]['forcegroupby']  = true;
-            self::$search[$itemtype][60]['usehaving']     = true;
-            self::$search[$itemtype][60]['massiveaction'] = false;
-            self::$search[$itemtype][60]['joinparams']    = ['beforejoin'
+            self::$search[$cl_itemtype][60]['table']         = 'glpi_tickets';
+            self::$search[$cl_itemtype][60]['field']         = 'id';
+            self::$search[$cl_itemtype][60]['datatype']      = 'count';
+            self::$search[$cl_itemtype][60]['name']          = _x('quantity', 'Number of tickets');
+            self::$search[$cl_itemtype][60]['forcegroupby']  = true;
+            self::$search[$cl_itemtype][60]['usehaving']     = true;
+            self::$search[$cl_itemtype][60]['massiveaction'] = false;
+            self::$search[$cl_itemtype][60]['joinparams']    = ['beforejoin'
                                                               => ['table'
                                                                         => 'glpi_items_tickets',
                                                                        'joinparams'
@@ -6797,14 +6803,14 @@ JAVASCRIPT;
                                                               => getEntitiesRestrictRequest('AND',
                                                                                             'NEWTABLE')];
 
-            self::$search[$itemtype][140]['table']         = 'glpi_problems';
-            self::$search[$itemtype][140]['field']         = 'id';
-            self::$search[$itemtype][140]['datatype']      = 'count';
-            self::$search[$itemtype][140]['name']          = _x('quantity', 'Number of problems');
-            self::$search[$itemtype][140]['forcegroupby']  = true;
-            self::$search[$itemtype][140]['usehaving']     = true;
-            self::$search[$itemtype][140]['massiveaction'] = false;
-            self::$search[$itemtype][140]['joinparams']    = ['beforejoin'
+            self::$search[$cl_itemtype][140]['table']         = 'glpi_problems';
+            self::$search[$cl_itemtype][140]['field']         = 'id';
+            self::$search[$cl_itemtype][140]['datatype']      = 'count';
+            self::$search[$cl_itemtype][140]['name']          = _x('quantity', 'Number of problems');
+            self::$search[$cl_itemtype][140]['forcegroupby']  = true;
+            self::$search[$cl_itemtype][140]['usehaving']     = true;
+            self::$search[$cl_itemtype][140]['massiveaction'] = false;
+            self::$search[$cl_itemtype][140]['joinparams']    = ['beforejoin'
                                                               => ['table'
                                                                         => 'glpi_items_problems',
                                                                        'joinparams'
@@ -6817,27 +6823,27 @@ JAVASCRIPT;
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])
              || ($itemtype == 'AllAssets')) {
-            self::$search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
+            self::$search[$cl_itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])
              || ($itemtype == 'AllAssets')) {
-            self::$search[$itemtype] += Contract::getSearchOptionsToAdd();
+            self::$search[$cl_itemtype] += Contract::getSearchOptionsToAdd();
          }
 
          if (Document::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
-            self::$search[$itemtype] += Document::getSearchOptionsToAdd();
+            self::$search[$cl_itemtype] += Document::getSearchOptionsToAdd();
          }
 
          if (Infocom::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
-            self::$search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
+            self::$search[$cl_itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
 
          if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            self::$search[$itemtype]['link'] = _n('External link', 'External links', Session::getPluralNumber());
-            self::$search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
+            self::$search[$cl_itemtype]['link'] = _n('External link', 'External links', Session::getPluralNumber());
+            self::$search[$cl_itemtype] += Link::getSearchOptionsToAdd($itemtype);
          }
 
          if ($withplugins) {
@@ -6845,8 +6851,8 @@ JAVASCRIPT;
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             $plugsearch = $plugsearch + Plugin::getAddSearchOptionsNew($itemtype);
             if (count($plugsearch)) {
-               self::$search[$itemtype] += ['plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber())];
-               self::$search[$itemtype] += $plugsearch;
+               self::$search[$cl_itemtype] += ['plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber())];
+               self::$search[$cl_itemtype] += $plugsearch;
             }
          }
 
@@ -6859,34 +6865,34 @@ JAVASCRIPT;
             }
          }
 
-         foreach (self::$search[$itemtype] as $key => $val) {
+         foreach (self::$search[$cl_itemtype] as $key => $val) {
             if (!is_array($val) || count($val) == 1) {
                // skip sub-menu
                continue;
             }
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
             if (isset($val['linkfield']) && empty($val['linkfield'])) {
-               self::$search[$itemtype][$key]['massiveaction'] = false;
+               self::$search[$cl_itemtype][$key]['massiveaction'] = false;
             }
 
             // Set default linkfield
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
                if ((strcmp($itemtable, $val['table']) == 0)
                    && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))) {
-                  self::$search[$itemtype][$key]['linkfield'] = $val['field'];
+                  self::$search[$cl_itemtype][$key]['linkfield'] = $val['field'];
                } else {
-                  self::$search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
+                  self::$search[$cl_itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                }
             }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
-               self::$search[$itemtype][$key]['joinparams'] = [];
+               self::$search[$cl_itemtype][$key]['joinparams'] = [];
             }
          }
 
       }
 
-      return self::$search[$itemtype];
+      return self::$search[$cl_itemtype];
    }
 
    /**
@@ -7727,5 +7733,15 @@ JAVASCRIPT;
                         AND `$alias`.`language` = '".
                               $_SESSION['glpilanguage']."'
                         AND `$alias`.`field` = '$field')";
+   }
+
+
+   static function getCleanedItemtype(string $itemtype = ""): string {
+      return str_replace([
+         '\\'
+      ], [
+         '_'
+      ],
+      $itemtype);
    }
 }

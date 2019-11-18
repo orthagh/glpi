@@ -121,7 +121,7 @@ class DisplayPreference extends CommonDBTM {
       $iterator = $DB->request([
          'FROM'   => self::getTable(),
          'WHERE'  => [
-            'itemtype'  => $itemtype,
+            'itemtype'  => addslashes($itemtype),
             'OR'        => [
                ['users_id' => $user_id],
                ['users_id' => 0]
@@ -445,6 +445,7 @@ class DisplayPreference extends CommonDBTM {
    function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;
 
+      $itemtype = str_replace('\\\\', '\\', $itemtype);
       $searchopt = Search::getCleanedOptions($itemtype);
       if (!is_array($searchopt)) {
          return false;
@@ -463,7 +464,7 @@ class DisplayPreference extends CommonDBTM {
       $iterator = $DB->request([
          'FROM'   => $this->getTable(),
          'WHERE'  => [
-            'itemtype'  => $itemtype,
+            'itemtype'  => addslashes($itemtype),
             'users_id'  => $IDuser
          ],
          'ORDER'  => 'rank'

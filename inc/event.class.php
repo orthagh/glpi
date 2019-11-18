@@ -143,27 +143,31 @@ class Event extends CommonDBTM {
          return [$logItemtype, $logService];
       }
 
-      $logItemtype = ['system'      => __('System'),
-                           'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
-                           'planning'    => __('Planning'),
-                           'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                           'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())];
+      $logItemtype = [
+         'system'      => __('System'),
+         'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
+         'planning'    => __('Planning'),
+         'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+         'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
+         'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())
+      ];
 
-      $logService = ['inventory'    => __('Assets'),
-                          'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                          'maintain'     => __('Assistance'),
-                          'planning'     => __('Planning'),
-                          'tools'        => __('Tools'),
-                          'financial'    => __('Management'),
-                          'login'        => __('Connection'),
-                          'setup'        => __('Setup'),
-                          'security'     => __('Security'),
-                          'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-                          'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
-                          'document'     => _n('Document', 'Documents', Session::getPluralNumber()),
-                          'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
-                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())];
+      $logService = [
+         'inventory'    => __('Assets'),
+         'ticket'       => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+         'maintain'     => __('Assistance'),
+         'planning'     => __('Planning'),
+         'tools'        => __('Tools'),
+         'financial'    => __('Management'),
+         'login'        => __('Connection'),
+         'setup'        => __('Setup'),
+         'security'     => __('Security'),
+         'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+         'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
+         'document'     => _n('Document', 'Documents', Session::getPluralNumber()),
+         'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
+         'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())
+      ];
 
       return [$logItemtype, $logService];
    }
@@ -305,106 +309,70 @@ class Event extends CommonDBTM {
    }
 
 
-   /**
-    * Print a nice tab for last event
-    *
-    * Print a great tab to present lasts events occured on glpi
-    *
-    * @param $target    where to go when complete
-    * @param $order     order by clause occurences (eg: ) (default 'DESC')
-    * @param $sort      order by clause occurences (eg: date) (defaut 'date')
-    * @param $start     (default 0)
-   **/
-   static function showList($target, $order = 'DESC', $sort = 'date', $start = 0) {
-      global $DB, $CFG_GLPI;
+   function rawSearchOptions() {
+      return [
+         [
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
+         ], [
+            'id'                 => '1',
+            'table'              => $this->getTable(),
+            'field'              => 'message',
+            'name'               => __('Message'),
+            'massiveaction'      => false,
+            'autocomplete'       => true,
+         ], [
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'type',
+            'name'               => __('Source'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'autocomplete'       => true,
+         ], [
+            'id'                 => '19',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => __('date'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+         ], [
+            'id'                 => '20',
+            'table'              => $this->getTable(),
+            'field'              => 'level',
+            'name'               => __('Level'),
+            'datatype'           => 'string',
+            'massiveaction'      => false
+         ], [
+            'id'                 => '21',
+            'table'              => $this->getTable(),
+            'field'              => 'service',
+            'name'               => __('Service'),
+            'datatype'           => 'specific',
+            'massiveaction'      => false
+         ]
+      ];
+   }
 
-      // Show events from $result in table form
-      list($logItemtype, $logService) = self::logArray();
 
-      // Columns of the Table
-      $items = ["type"     => [__('Source'), ""],
-                     "items_id" => [__('ID'), ""],
-                     "date"     => [__('Date'), ""],
-                     "service"  => [__('Service'), "width='8%'"],
-                     "level"    => [__('Level'), "width='8%'"],
-                     "message"  => [__('Message'), "width='50%'"]];
-
-      // define default sorting
-      if (!isset($items[$sort])) {
-         $sort = "date";
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      switch ($field) {
+         case 'type' :
+            $logArray = self::logArray();
+            return $logArray[0][$values[$field]] ?? $values[$field];
+         case 'service' :
+            $logArray = self::logArray();
+            return $logArray[1][$values[$field]] ?? $values[$field];
       }
-      if ($order != "ASC") {
-         $order = "DESC";
-      }
 
-      // Query Database
-      $iterator = $DB->request([
-         'FROM'   => 'glpi_events',
-         'ORDER'  => "$sort $order",
-         'START'  => (int)$start,
-         'LIMIT'  => (int)$_SESSION['glpilist_limit']
-      ]);
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
 
-      // Number of results
-      $numrows = countElementsInTable("glpi_events");
-      // Get results
-      $number = count($iterator);
 
-      // No Events in database
-      if ($number < 1) {
-         echo "<div class='center b'>".__('No Event')."</div>";
-         return;
-      }
-
-      // Output events
-      $i = 0;
-
-      echo "<div class='center'>";
-      $parameters = "sort=$sort&amp;order=$order";
-      Html::printPager($start, $numrows, $target, $parameters);
-
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-
-      foreach ($items as $field => $args) {
-         echo "<th ".$args[1]."";
-         if ($sort == $field) {
-            echo " class='order_$order' ";
-         }
-         echo "><a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
-              "</a></th>";
-      }
-      echo "</tr>";
-
-      while ($row = $iterator->next()) {
-         $ID       = $row["id"];
-         $items_id = $row["items_id"];
-         $type     = $row["type"];
-         $date     = $row["date"];
-         $service  = $row["service"];
-         $level    = $row["level"];
-         $message  = $row["message"];
-
-         $itemtype = "&nbsp;";
-         if (isset($logItemtype[$type])) {
-            $itemtype = $logItemtype[$type];
-         } else {
-            $type = getSingular($type);
-            if ($item = getItemForItemtype($type)) {
-               $itemtype = $item->getTypeName(1);
-            }
-         }
-
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>$itemtype</td>";
-         echo "<td class='center b'>";
-         self::displayItemLogID($type, $items_id);
-         echo "</td><td>".Html::convDateTime($date)."</td>";
-         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service);
-         echo "</td><td class='center'>".$level."</td><td>".$message."</td></tr>";
-
-         $i++;
-      }
-      echo "</table></div><br>";
+   static function getDefaultSearchRequest() {
+      return [
+         'sort'     => 19,
+         'order'    => 'DESC'
+      ];
    }
 }
