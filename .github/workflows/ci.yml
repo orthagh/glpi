@@ -97,7 +97,7 @@ jobs:
 
   tests:
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
-    runs-on: "ubuntu-latest"
+    runs-on: ["teclib", "ubuntu-latest"]
     strategy:
       fail-fast: false
       matrix:
