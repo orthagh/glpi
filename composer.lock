@@ -1641,16 +1641,16 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "2.11.0",
+            "version": "2.11.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "85678f444b6dcb48e8a04591779e11c24e5bb901"
+                "reference": "78adb53ebf6c0bc63f92273fd7809dabc554f786"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/85678f444b6dcb48e8a04591779e11c24e5bb901",
-                "reference": "85678f444b6dcb48e8a04591779e11c24e5bb901",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/78adb53ebf6c0bc63f92273fd7809dabc554f786",
+                "reference": "78adb53ebf6c0bc63f92273fd7809dabc554f786",
                 "shasum": ""
             },
             "require": {
@@ -1722,7 +1722,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-10-24T13:14:32+00:00"
+            "time": "2021-08-20T08:23:04+00:00"
         },
         {
             "name": "laminas/laminas-json",
@@ -2142,29 +2142,30 @@
         },
         {
             "name": "laminas/laminas-stdlib",
-            "version": "3.3.1",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe"
+                "reference": "c8ac6a76a133e682acfabc821d4a2ec646934b12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
-                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/c8ac6a76a133e682acfabc821d4a2ec646934b12",
+                "reference": "c8ac6a76a133e682acfabc821d4a2ec646934b12",
                 "shasum": ""
             },
             "require": {
-                "laminas/laminas-zendframework-bridge": "^1.0",
                 "php": "^7.3 || ^8.0"
             },
-            "replace": {
-                "zendframework/zend-stdlib": "^3.2.1"
+            "conflict": {
+                "zendframework/zend-stdlib": "*"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "~1.0.0",
+                "laminas/laminas-coding-standard": "~2.3.0",
                 "phpbench/phpbench": "^0.17.1",
-                "phpunit/phpunit": "~9.3.7"
+                "phpunit/phpunit": "~9.3.7",
+                "psalm/plugin-phpunit": "^0.16.0",
+                "vimeo/psalm": "^4.7"
             },
             "type": "library",
             "autoload": {
@@ -2196,7 +2197,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-11-19T20:18:59+00:00"
+            "time": "2021-08-03T13:40:40+00:00"
         },
         {
             "name": "laminas/laminas-validator",
@@ -2287,16 +2288,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32"
+                "reference": "13af2502d9bb6f7d33be2de4b51fb68c6cdb476e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/6cccbddfcfc742eb02158d6137ca5687d92cee32",
-                "reference": "6cccbddfcfc742eb02158d6137ca5687d92cee32",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/13af2502d9bb6f7d33be2de4b51fb68c6cdb476e",
+                "reference": "13af2502d9bb6f7d33be2de4b51fb68c6cdb476e",
                 "shasum": ""
             },
             "require": {
@@ -2345,7 +2346,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-02-25T21:54:58+00:00"
+            "time": "2021-06-24T12:49:22+00:00"
         },
         {
             "name": "league/csv",
@@ -4384,16 +4385,16 @@
         },
         {
             "name": "symfony/polyfill-php73",
-            "version": "v1.22.1",
+            "version": "v1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php73.git",
-                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2"
+                "reference": "fba8933c384d6476ab14fb7b8526e5287ca7e010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
-                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
+                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/fba8933c384d6476ab14fb7b8526e5287ca7e010",
+                "reference": "fba8933c384d6476ab14fb7b8526e5287ca7e010",
                 "shasum": ""
             },
             "require": {
@@ -4402,7 +4403,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.22-dev"
+                    "dev-main": "1.23-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4443,7 +4444,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php73/tree/v1.22.1"
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.23.0"
             },
             "funding": [
                 {
@@ -4459,7 +4460,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-07T16:49:33+00:00"
+            "time": "2021-02-19T12:13:01+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -6790,5 +6791,5 @@
     "platform-overrides": {
         "php": "7.3.0"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
