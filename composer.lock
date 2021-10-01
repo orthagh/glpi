@@ -207,16 +207,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.0.2",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db"
+                "reference": "96b776bdbd1caeb88fba4eb6481e685b7c45f3b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/40b1272feb34bf10fd82739e9c3d07b98606b0db",
-                "reference": "40b1272feb34bf10fd82739e9c3d07b98606b0db",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/96b776bdbd1caeb88fba4eb6481e685b7c45f3b3",
+                "reference": "96b776bdbd1caeb88fba4eb6481e685b7c45f3b3",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,8 @@
             "bin": [
                 "bin/convert",
                 "bin/build_hw_jsons",
-                "bin/refresh_hw_sources"
+                "bin/refresh_hw_sources",
+                "bin/validate"
             ],
             "type": "library",
             "extra": {
@@ -264,7 +265,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2021-01-20T14:50:09+00:00"
+            "time": "2021-09-20T06:52:27+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4123,16 +4124,16 @@
         },
         {
             "name": "swaggest/json-diff",
-            "version": "v3.8.1",
+            "version": "v3.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/json-diff.git",
-                "reference": "d2184358c5ef5ecaa1f6b4c2bce175fac2d25670"
+                "reference": "bb3e3b4e9d842bb2e48f31ea568d0459968d1d42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/d2184358c5ef5ecaa1f6b4c2bce175fac2d25670",
-                "reference": "d2184358c5ef5ecaa1f6b4c2bce175fac2d25670",
+                "url": "https://api.github.com/repos/swaggest/json-diff/zipball/bb3e3b4e9d842bb2e48f31ea568d0459968d1d42",
+                "reference": "bb3e3b4e9d842bb2e48f31ea568d0459968d1d42",
                 "shasum": ""
             },
             "require": {
@@ -4160,22 +4161,22 @@
             "description": "JSON diff/rearrange/patch/pointer library for PHP",
             "support": {
                 "issues": "https://github.com/swaggest/json-diff/issues",
-                "source": "https://github.com/swaggest/json-diff/tree/v3.8.1"
+                "source": "https://github.com/swaggest/json-diff/tree/v3.8.3"
             },
-            "time": "2020-09-25T17:47:07+00:00"
+            "time": "2021-09-25T22:09:03+00:00"
         },
         {
             "name": "swaggest/json-schema",
-            "version": "v0.12.31",
+            "version": "v0.12.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swaggest/php-json-schema.git",
-                "reference": "a4adcdbb38f38a19d3f1801150822172cf1c4853"
+                "reference": "ab7cca149a5822acc5be538dd6c008a348f6cb89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/a4adcdbb38f38a19d3f1801150822172cf1c4853",
-                "reference": "a4adcdbb38f38a19d3f1801150822172cf1c4853",
+                "url": "https://api.github.com/repos/swaggest/php-json-schema/zipball/ab7cca149a5822acc5be538dd6c008a348f6cb89",
+                "reference": "ab7cca149a5822acc5be538dd6c008a348f6cb89",
                 "shasum": ""
             },
             "require": {
@@ -4183,11 +4184,10 @@
                 "ext-mbstring": "*",
                 "php": ">=5.4",
                 "phplang/scope-exit": "^1.0",
-                "swaggest/json-diff": "^3.5.1"
+                "swaggest/json-diff": "^3.8.2"
             },
             "require-dev": {
-                "phpunit/php-code-coverage": "2.2.4",
-                "phpunit/phpunit": "4.8.35"
+                "phpunit/phpunit": "^4.8.23"
             },
             "type": "library",
             "autoload": {
@@ -4209,9 +4209,9 @@
             "support": {
                 "email": "vearutop@gmail.com",
                 "issues": "https://github.com/swaggest/php-json-schema/issues",
-                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.31"
+                "source": "https://github.com/swaggest/php-json-schema/tree/v0.12.38"
             },
-            "time": "2020-09-21T09:31:21+00:00"
+            "time": "2021-09-17T13:54:01+00:00"
         },
         {
             "name": "symfony/console",
@@ -6790,5 +6790,5 @@
     "platform-overrides": {
         "php": "7.3.0"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
