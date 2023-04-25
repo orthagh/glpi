@@ -1,38 +1,173 @@
-{#
- # ---------------------------------------------------------------------
- #
- # GLPI - Gestionnaire Libre de Parc Informatique
- #
- # http://glpi-project.org
- #
- # @copyright 2015-2023 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
- # @licence   https://www.gnu.org/licenses/gpl-3.0.html
- #
- # ---------------------------------------------------------------------
- #
- # LICENSE
- #
- # This file is part of GLPI.
- #
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <https://www.gnu.org/licenses/>.
- #
- # ---------------------------------------------------------------------
- #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set field_options = {
+
+} %}
+{% set fk = item.getForeignKeyField() %}
+{% set type_itemtype = item.getTypeClass() %}
+{% set type_fk = item.getTypeForeignKeyField() %}
+{% set model_itemtype = item.getModelClass() %}
+{% set model_fk = item.getModelForeignKeyField() %}
+
+<h1>
+    {{ item.getType()|itemtype_name }}
+    &nbsp;-&nbsp;
+    {% if item.isField('name') %}
+        {{ item.fields['name'] }}
+    {% endif %}
+    ({{ item.fields['id'] }})
+</h1>
 
 <div style="page-break-after: always;">
-    {{ include('generic_show_form.html.twig', {
-        'readonly_fields': true
-    }) }}
+    {% block form_fields %}
+        {% set fields = {
+            'firstname': {
+                'label': __('First name'),
+            },
+            'states_id': {
+                'label': __('Status'),
+                'value': get_item_name('State', item.fields['states_id']),
+            },
+            fk: {
+                'label': __('As child of'),
+                'value': item.fields[fk],
+                'condition': item.getType() != 'Software',
+            },
+            'is_helpdesk_visible': {
+                'label': __('Associable to a ticket'),
+                'value': item.fields['is_helpdesk_visible'] ? __('Yes') : __('No'),
+                'condition': item.getType()  != 'SoftwareLicense',
+            },
+            'dc_breadcrumb': {
+                'label': __('Data center position'),
+                'value': call(item.getType() ~ '::renderDcBreadcrumb', [
+                    item.fields['id']
+                ])|raw,
+                'add_condition': item is usingtrait('Glpi\\Features\\DCBreadcrumb'),
+            },
+            'locations_id': {
+                'label': 'Location'|itemtype_name,
+                'value': get_item_name('Location', item.fields['locations_id']),
+            },
+            'item_type': {
+                'label': _n('Type', 'Types', 1),
+                'value': item.fields['itemtype']|length ? item.fields['itemtype']|itemtype_name : "",
+                'condition': item.getType() == 'Unmanaged',
+            },
+            'date_domaincreation': {
+                'label': __('Registration date'),
+            },
+            type_fk: {
+                'label': type_itemtype|itemtype_name,
+                'value': get_item_name(type_itemtype, item.fields[type_fk]),
+            },
+            'usertitles_id': {
+                'label': 'UserTitle'|itemtype_name,
+                'value': get_item_name('UserTitle', item.fields['usertitles_id']),
+            },
+            'registration_number': {
+                'label': (item.getType() starts with 'User' ? _x('user', 'Administrative number') : _x('infocom', 'Administrative number')),
+            },
+            'phone': {
+                'label': __('Phone'),
+            },
+            'phone2': {
+                'label': __('Phone 2'),
+            },
+            'phonenumber': {
+                'label':  'Phone'|itemtype_name,
+            },
+            'mobile': {
+                'label': __('Mobile phone'),
+            },
+            'fax': {
+                'label': __('Fax'),
+            },
+            'website': {
+                'label': __('Website'),
+            },
+            'email': {
+                'label': _n('Email', 'Emails', 1),
+            },
+            'address': {
+                'label': __('Address'),
+            },
+            'postalcode': {
+                'label': __('Postal code'),
+            },
+            'postcode': {
+                'label': __('Postal code'),
+            },
+            'town': {
+                'label': __('City'),
+            },
+            'state': {
+                'label': _x('location', 'State'),
+                'condition': item.getType() in ['Supplier', 'Contact'],
+            },
+            'country': {
+                'label': __('Country'),
+            },
+            'date_expiration': {
+                'label': __('Expiration date'),
+                'condition': false,
+            },
+            'ref': {
+                'label': __('Reference'),
+            },
+            'users_id_tech': {
+                'label': __('Technician in charge of the hardware'),
+                'value': get_item_name('User', item.fields['users_id_tech']),
+            },
+            'manufacturers_id': {
+                'label': (item_type starts with 'Software' ? __('Publisher') : 'Manufacturer'|itemtype_name),
+                'value': get_item_name('Manufacturer', item.fields['manufacturers_id']),
+            },
+            'groups_id_tech': {
+                'label': __('Group in charge of the hardware'),
+                'value': get_item_name('Group', item.fields['groups_id_tech']),
+            },
+            model_fk: {
+                'label': _n('Model', 'Models', 1),
+                'value': get_item_name(model_itemtype, item.fields[model_fk]),
+            },
+            'contact_num': {
+                'label': __('Alternate username number'),
+                'condition': item.getType() != 'SoftwareLicense'
+            },
+            'serial': {
+                'label': __('Serial number'),
+            },
+            'contact': {
+                'label': __('Alternate username'),
+                'condition': item.getType() != 'SoftwareLicense'
+            },
+            'otherserial': {
+                'label': __('Inventory number'),
+            },
+            'sysdescr': {
+                'label': __('Sysdescr'),
+            },
+            'snmpcredentials_id': {
+                'label': __('SNMP credentials'),
+                'value': get_item_name('Snmpcredential', item.fields['snmpcredentials_id']),
+            },
+
+        } %}
+
+        <div class="row">
+            {% for key, data in fields %}
+                {% if item.isField(key) and (data.condition is not defined or data.condition) %}
+                    {{ fields.readOnlyField(
+                        key,
+                        data.value is defined ? data.value : item.fields[key],
+                        data.label,
+                        field_options
+                    ) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% block more_fields %}
+    {% endblock %}
 </div>

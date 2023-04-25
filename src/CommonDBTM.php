@@ -488,6 +488,13 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    public function showExportHtml(): string
+    {
+        return TemplateRenderer::getInstance()->render('export/generic.html.twig', [
+            'item' => $this,
+        ]);
+    }
+
     public function getSNMPCredential()
     {
         if ($this->isField('snmpcredentials_id') && $this->fields['snmpcredentials_id']) {

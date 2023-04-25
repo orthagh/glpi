@@ -455,6 +455,16 @@ abstract class CommonITILObject extends CommonDBTM
         return true;
     }
 
+
+    public function showExportHtml(): string
+    {
+        return TemplateRenderer::getInstance()->render('export/CommonITILObject.html.twig', [
+            'item'               => $this,
+            'timeline'           => $this->getTimelineItems(),
+            'timeline_itemtypes' => $this->getTimelineItemtypes(),
+        ]);
+    }
+
     /**
      * Return an array of predefined fields from provided template
      * Append also data to $options param (passed by reference) :

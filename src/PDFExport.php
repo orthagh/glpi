@@ -71,7 +71,7 @@ class PDFExport
                 $item_html = "";
                 foreach ($ids as $id) {
                     $item->getFromDB($id);
-                    $item_html .= self::getHtmlForItem($item);
+                    $item_html .= $item->showExportHtml();
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
                 self::generate($item_html);
@@ -82,37 +82,18 @@ class PDFExport
     }
 
 
-    private static function getHtmlForItem(CommonDBTM $item)
-    {
-        return TemplateRenderer::getInstance()->render('export/generic.html.twig', [
-            'item' => $item,
-        ]);
-    }
-
 
     public static function generate(string $body, bool $stream = true)
     {
-        global $CFG_GLPI;
-
-        $head = TemplateRenderer::getInstance()->render('export/head.html.twig', [
-            'title' => 'GLPI PDF Export',
+        $head = TemplateRenderer::getInstance()->render('export/parts/header.html.twig', [
+            'title'       => 'GLPI PDF Export',
+            'css_content' => Html::compileScss([
+                'file' => '/css/pdf_export',
+            ]),
         ]);
-        $footer = TemplateRenderer::getInstance()->render('export/footer.html.twig');
+        $footer = TemplateRenderer::getInstance()->render('export/parts/footer.html.twig');
         $html = $head . $body . $footer;
-        //echo $html; exit;
-
-        $options = new Options();
-        $options->set('isRemoteEnabled', true);
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-
-        $dompdf->render();
-
-        if ($stream) {
-            $dompdf->stream();
-        }
-
-        return $dompdf->output();
+        echo $html;
+        exit;
     }
 }
