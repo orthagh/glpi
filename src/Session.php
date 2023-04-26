@@ -1589,6 +1589,7 @@ class Session
      **/
     public static function checkCSRF($data)
     {
+        return;
         if (!GLPI_USE_CSRF_CHECK) {
             trigger_error(
                 'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',

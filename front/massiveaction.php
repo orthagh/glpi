@@ -37,8 +37,10 @@ include('../inc/includes.php');
 
 Session::checkLoginUser();
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+if (!isset($_REQUEST['no_html_header'])) {
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
+}
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
@@ -54,7 +56,10 @@ try {
     Html::popFooter();
     exit();
 }
-Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
+
+if (!isset($_REQUEST['no_html_header'])) {
+    Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
+}
 
 $results   = $ma->process();
 

@@ -771,6 +771,7 @@ class MassiveAction
                 }
             }
 
+            PDFExport::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 

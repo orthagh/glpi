@@ -50,6 +50,7 @@
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
    {% set field_options = {
        'locked_fields': item.getLockedFields(),
+       'readonly_fields': readonly_fields ?? false
    } %}
 
    <div class="card-body d-flex flex-wrap">
