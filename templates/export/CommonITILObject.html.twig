@@ -1,0 +1,121 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+
+{% macro main_description() %}
+    TODO main main_description
+{% endmacro %}
+
+<h1>
+    {{ item.getType()|itemtype_name }}
+    &nbsp;-&nbsp;
+    {% if item.isField('name') %}
+        {{ item.fields['name'] }}
+    {% endif %}
+    ({{ item.fields['id'] }})
+</h1>
+
+<div style="page-break-after: always;">
+    <div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+        {% if not is_timeline_reversed %}
+            {{ _self.main_description() }}
+        {% endif %}
+
+        {% for entry in timeline %}
+            {{ include('components/itilobject/timeline/timeline_item_vars.html.twig', {
+            'entry': entry
+        }, with_context = false) }}
+
+            {{ include('components/itilobject/timeline/timeline_item_vars.html.twig', {
+        'entry': entry
+      }, with_context = false) }}
+
+            <div class="timeline-item {{ is_right ? 'ms-auto' : '' }} {{ itiltype }}">
+
+                <div>
+                    {# TODO task state #}
+                </div>
+
+                <div>
+                    {# TODO user picture #}
+                </div>
+
+                <div class="timeline-content mt-2 p-2">
+                    <div>
+                        {% set date_span %}
+                            <span>
+                                <i class="ti ti-clock"></i>
+                                {{ date_creation|formatted_datetime }}
+                            </span>
+                        {% endset %}
+
+                        {% set creator_span %}
+                            {{ include('components/user/link_with_tooltip.html.twig', {
+                                'users_id': users_id,
+                                'enable_anonymization': anonym_user,
+                                'export': true
+                            }, with_context = false) }}
+                        {% endset %}
+
+                        <span class="badge badge-outline text-blue">
+                            {% if users_id > 0 %}
+                                {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+                            {% else %}
+                                {{ __('Created: %1s')|format(date_span)|raw }}
+                            {% endif %}
+                        </span>
+
+                        {% if entry['item']['users_id_editor'] and date_creation != date_mod %}
+                        
+                        {% endif %}
+
+                        {% if entry['item']['is_private']  %}
+                            <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
+                        {% endif %}
+                    </div>
+
+                    {{ entry['item']['content']|safe_html }}
+
+                    {# TODO sub documents #}
+                </div>
+
+
+            </div>
+        {% endfor %}
+
+        {% if is_timeline_reversed %}
+            {{ _self.main_description() }}
+        {% endif %}
+    </div>
+</div>

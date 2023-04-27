@@ -1,0 +1,50 @@
+{% set entry_i = entry['item'] %}
+{% set entry_object = get_item(entry['type'], entry_i['id']) %}
+{% set users_id = entry_i['users_id'] %}
+{% set is_private = entry_i['is_private'] ?? false %}
+{% set date_creation = entry_i['date_creation'] ?? entry_i['date'] %}
+{% set date_mod = entry_i['date_mod'] %}
+{% set entry_rand = random() %}
+{% set is_current_user = users_id == session('glpiID') %}
+{% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
+
+{% set can_edit_i  = entry_i['can_edit'] %}
+
+{% set timeline_position = entry_i['timeline_position'] %}
+{% set item_position = 't-left' %}
+{% if timeline_position == constant('CommonITILObject::TIMELINE_LEFT') %}
+    {% set item_position = 't-left' %}
+{% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDLEFT') %}
+    {% set item_position = 't-left t-middle' %}
+{% elseif timeline_position == constant('CommonITILObject::TIMELINE_MIDRIGHT') %}
+    {% set item_position = 't-right t-middle' %}
+{% elseif timeline_position == constant('CommonITILObject::TIMELINE_RIGHT') %}
+    {% set item_position = 't-right' %}
+{% endif %}
+
+{% set itiltype = entry['itiltype'] is defined ? 'ITIL' ~ entry['itiltype'] : entry['type'] %}
+
+{% set state_class = '' %}
+{% if entry_i['state'] is constant('Planning::INFO') %}
+    {% set state_class = 'info' %}
+{% endif %}
+{% if entry_i['state'] is constant('Planning::TODO') %}
+    {% set state_class = 'todo' %}
+{% endif %}
+{% if entry_i['state'] is constant('Planning::DONE') %}
+    {% set state_class = 'done' %}
+{% endif %}
+
+{% set solution_class = '' %}
+{% if (itiltype == 'ITILSolution' or itiltype == 'ITILValidation') and entry_i['status'] is defined %}
+    {% set status = itiltype == 'ITILSolution' ? entry_i['status'] : entry_i['status']|replace({'status_': ''}) %}
+    {% if status == constant('CommonITILValidation::WAITING') %}
+    {% set solution_class = 'waiting' %}
+    {% endif %}
+    {% if status == constant('CommonITILValidation::ACCEPTED') %}
+    {% set solution_class = 'accepted' %}
+    {% endif %}
+    {% if status == constant('CommonITILValidation::REFUSED') %}
+    {% set solution_class = 'refused' %}
+    {% endif %}
+{% endif %}

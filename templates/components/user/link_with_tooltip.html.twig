@@ -38,7 +38,7 @@
     {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
 </span>
 
-{% if not enable_anonymization %}
+{% if not export and not enable_anonymization %}
     {% set user = get_item('User', users_id) %}
     {% if user is not null %}
         {% set user_fields = user.fields %}

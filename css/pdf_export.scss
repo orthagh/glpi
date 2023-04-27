@@ -32,3 +32,14 @@
  */
 
 @import "includes/palette_light";
+
+.timeline-item {
+    page-break-inside: avoid;
+
+    .timeline-content {
+        &::before,
+        &::after {
+            display: none;
+        }
+    }
+}
