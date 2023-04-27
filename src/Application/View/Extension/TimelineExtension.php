@@ -35,6 +35,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Config;
 use Entity;
 use Planning;
 use Twig\TwigFilter;
@@ -63,6 +64,9 @@ class TimelineExtension extends AbstractExtension
         return [
             new TwigFunction('is_timeline_reversed', [$this, 'isTimelineReversed']),
             new TwigFunction('is_anonym_user', [$this, 'isAnonymUser']),
+            new TwigFunction('is_validation_answer', [$this, 'isValidationAnswer']),
+            new TwigFunction('timeline_display_relative_date', [$this, 'isTimelineDisplayRelativeDate']),
+            new TwigFunction('can_edit_timeline_entry', [$this, 'canEditTimelineEntry']),
         ];
     }
 
@@ -82,11 +86,7 @@ class TimelineExtension extends AbstractExtension
     }
 
     /**
-     * Returns class for given state.
-     *
-     * @param string $itemtype
-     *
-     * @return string
+     * Returns class for given (Task) state.
      */
     public function getStateClass(string $item_state = null): ?string
     {
@@ -101,6 +101,9 @@ class TimelineExtension extends AbstractExtension
     }
 
 
+    /**
+     * Returns class for given (Solution|Validation) status.
+     */
     public function getSolutionClass(string $itiltype = null, string $status = null): ?string
     {
         $solution_class = "";
@@ -122,6 +125,9 @@ class TimelineExtension extends AbstractExtension
     }
 
 
+    /**
+     * Returns timeline order based on user preference or general config.
+     */
     public function isTimelineReversed(): bool
     {
         global $CFG_GLPI;
@@ -130,12 +136,55 @@ class TimelineExtension extends AbstractExtension
     }
 
 
+    /**
+     * is the given user anonymous?
+     */
     public function isAnonymUser(int $users_id = 0): bool
     {
-        $current_interface  = $_SESSION['glpiactiveprofile']['interface'] ?? null;
-        $anonymize_support_agents = Entity::getUsedConfig('anonymize_support_agents', $_SESSION['glpiactive_entity']);
-        return $current_interface === 'helpdesk'
+        $anonymize_support_agents = Entity::getUsedConfig(
+            'anonymize_support_agents',
+            $_SESSION['glpiactive_entity']
+        );
+        return ($_SESSION['glpiactiveprofile']['interface'] ?? null) === 'helpdesk'
             && $users_id != $_SESSION['glpiID']
             && $anonymize_support_agents != Entity::ANONYMIZE_DISABLED;
+    }
+
+
+    /**
+     * is the given entry a validation answer?
+     */
+    public function isValidationAnswer(array $entry = null): bool
+    {
+        return $entry !== null
+            && str_ends_with($entry['type'], 'Validation')
+            && $entry['item_action'] === 'validation-answer';
+    }
+
+
+    /**
+     * is the timeline should display dates as relatives?
+     */
+    public function isTimelineDisplayRelativeDate(): bool
+    {
+        global $CFG_GLPI;
+
+        $timeline_display_date = $_SESSION['glpitimeline_display_date'] ?? $CFG_GLPI['timeline_display_date'] ?? null;
+
+        return $timeline_display_date == Config::TIMELINE_RELATIVE_DATE;
+    }
+
+
+    /**
+     * can the given entry (and the parent object) be edited?
+     */
+    public function canEditTimelineEntry(array $entry = null, CommonITILObject $parent = null): bool
+    {
+        return $entry !== null
+            && $entry['item'] !== null
+            && $entry['item']['can_edit']
+            && $parent !== null
+            && !in_array($parent->fields['status'], $parent->getClosedStatusArray())
+            && !in_array($entry['type'], ['Document_Item', 'Assign']);
     }
 }
