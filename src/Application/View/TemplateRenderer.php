@@ -35,26 +35,27 @@
 
 namespace Glpi\Application\View;
 
-use Glpi\Application\ErrorHandler;
-use Glpi\Application\View\Extension\ConfigExtension;
-use Glpi\Application\View\Extension\DataHelpersExtension;
-use Glpi\Application\View\Extension\DocumentExtension;
-use Glpi\Application\View\Extension\FrontEndAssetsExtension;
-use Glpi\Application\View\Extension\I18nExtension;
-use Glpi\Application\View\Extension\ItemtypeExtension;
-use Glpi\Application\View\Extension\PhpExtension;
-use Glpi\Application\View\Extension\PluginExtension;
-use Glpi\Application\View\Extension\RoutingExtension;
-use Glpi\Application\View\Extension\SearchExtension;
-use Glpi\Application\View\Extension\SecurityExtension;
-use Glpi\Application\View\Extension\SessionExtension;
-use Glpi\Application\View\Extension\TeamExtension;
 use Plugin;
 use Session;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Glpi\Application\ErrorHandler;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
-use Twig\Loader\FilesystemLoader;
+use Glpi\Application\View\Extension\PhpExtension;
+use Glpi\Application\View\Extension\I18nExtension;
+use Glpi\Application\View\Extension\TeamExtension;
+use Glpi\Application\View\Extension\ConfigExtension;
+use Glpi\Application\View\Extension\PluginExtension;
+use Glpi\Application\View\Extension\SearchExtension;
+use Glpi\Application\View\Extension\RoutingExtension;
+use Glpi\Application\View\Extension\SessionExtension;
+use Glpi\Application\View\Extension\DocumentExtension;
+use Glpi\Application\View\Extension\ItemtypeExtension;
+use Glpi\Application\View\Extension\SecurityExtension;
+use Glpi\Application\View\Extension\TimelineExtension;
+use Glpi\Application\View\Extension\DataHelpersExtension;
+use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 
 /**
  * @since 10.0.0
@@ -114,6 +115,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
+        $this->environment->addExtension(new TimelineExtension());
 
        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
