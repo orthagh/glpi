@@ -31,10 +31,33 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+{% macro main_description(item) %}
+    {% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
+    {% set creator_span %}
+        {{ include('components/user/link_with_tooltip.html.twig', {
+            'users_id': users_id,
+            'enable_anonymization': is_anonym_user(users_id),
+            'export': true
+        }, with_context = false) }}
+    {% endset %}
 
-{% macro main_description() %}
-    TODO main main_description
+    {% set date_span %}
+        <span>
+            <i class="ti ti-clock"></i>
+            {{ item.fields['date_creation']|formatted_datetime }}
+        </span>
+    {% endset %}
+
+    <div class="timeline-item ITILContent">
+        <div class="timeline-content mt-2 p-2">
+            <div>
+                <span class="badge badge-outline text-blue">
+                     {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+                </span>
+                TODO main main_description
+            </div>
+        </div>
+    </div>
 {% endmacro %}
 
 <h1>
@@ -48,20 +71,17 @@
 
 <div style="page-break-after: always;">
     <div class="itil-timeline d-flex flex-column align-items-start mb-auto">
-        {% if not is_timeline_reversed %}
-            {{ _self.main_description() }}
+        {% if not is_timeline_reversed() %}
+            {{ _self.main_description(item) }}
         {% endif %}
 
         {% for entry in timeline %}
-            {{ include('components/itilobject/timeline/timeline_item_vars.html.twig', {
-            'entry': entry
-        }, with_context = false) }}
+            {% set users_id = entry['item']['users_id'] %}
+            {% set item_position = entry|item_position_class %}
+            {% set date_creation = entry['item']['date_creation'] ?? entry['item']['date'] %}
+            {% set date_mod = entry['item']['date_mod'] %}
 
-            {{ include('components/itilobject/timeline/timeline_item_vars.html.twig', {
-        'entry': entry
-      }, with_context = false) }}
-
-            <div class="timeline-item {{ is_right ? 'ms-auto' : '' }} {{ itiltype }}">
+            <div class="timeline-item {{ 'right' in item_position ? 'ms-auto' : '' }} {{ entry|itiltype }}">
 
                 <div>
                     {# TODO task state #}
@@ -83,7 +103,7 @@
                         {% set creator_span %}
                             {{ include('components/user/link_with_tooltip.html.twig', {
                                 'users_id': users_id,
-                                'enable_anonymization': anonym_user,
+                                'enable_anonymization': is_anonym_user(users_id),
                                 'export': true
                             }, with_context = false) }}
                         {% endset %}
@@ -97,10 +117,10 @@
                         </span>
 
                         {% if entry['item']['users_id_editor'] and date_creation != date_mod %}
-                        
+                            
                         {% endif %}
 
-                        {% if entry['item']['is_private']  %}
+                        {% if entry|is_private  %}
                             <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
                         {% endif %}
                     </div>
@@ -114,7 +134,7 @@
             </div>
         {% endfor %}
 
-        {% if is_timeline_reversed %}
+        {% if is_timeline_reversed() %}
             {{ _self.main_description() }}
         {% endif %}
     </div>

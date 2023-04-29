@@ -55,6 +55,11 @@ class TimelineExtension extends AbstractExtension
             new TwigFilter('item_position_class', [$this, 'getItemPositionClass']),
             new TwigFilter('state_class', [$this, 'getStateClass']),
             new TwigFilter('solution_class', [$this, 'getSolutionClass']),
+            new TwigFilter('is_private', [$this, 'isPrivate']),
+            new TwigFilter('itiltype', [$this, 'getItilType']),
+            new TwigFilter('is_state_todo', [$this, 'isStateTodo']),
+            new TwigFilter('is_state_done', [$this, 'isStateDone']),
+            new TwigFilter('can_edit', [$this, 'canEditTimelineEntry']),
         ];
     }
 
@@ -66,14 +71,14 @@ class TimelineExtension extends AbstractExtension
             new TwigFunction('is_anonym_user', [$this, 'isAnonymUser']),
             new TwigFunction('is_validation_answer', [$this, 'isValidationAnswer']),
             new TwigFunction('timeline_display_relative_date', [$this, 'isTimelineDisplayRelativeDate']),
-            new TwigFunction('can_edit_timeline_entry', [$this, 'canEditTimelineEntry']),
         ];
     }
 
 
 
-    public function getItemPositionClass(string $timeline_position = null): ?string
+    public function getItemPositionClass(array $entry = null): ?string
     {
+        $timeline_position = $entry['item']['timeline_position'] ?? null;
         $position_class = match ($timeline_position) {
             default                             => "t-left",
             CommonITILObject::TIMELINE_LEFT     => "t-left",
@@ -88,8 +93,9 @@ class TimelineExtension extends AbstractExtension
     /**
      * Returns class for given (Task) state.
      */
-    public function getStateClass(string $item_state = null): ?string
+    public function getStateClass(array $entry = null): ?string
     {
+        $item_state = $entry['item']['state'] ?? null;
         $state_class = match ($item_state) {
             default        => "",
             Planning::INFO => "info",
@@ -101,13 +107,27 @@ class TimelineExtension extends AbstractExtension
     }
 
 
+    public function isStateTodo(array $entry = null): bool
+    {
+        return ($entry['item']['state'] ?? null) == Planning::TODO;
+    }
+
+
+    public function isStateDone(array $entry = null): bool
+    {
+        return ($entry['item']['state'] ?? null) == Planning::DONE;
+    }
+
+
     /**
      * Returns class for given (Solution|Validation) status.
      */
-    public function getSolutionClass(string $itiltype = null, string $status = null): ?string
+    public function getSolutionClass(array $entry = null): ?string
     {
-        $solution_class = "";
+        $itiltype = $this->getItilType($entry);
+        $status = $entry['item']['status'] ?? null;
 
+        $solution_class = "";
         if (in_array($itiltype, ['ITILSolution', 'ITILValidation']) && $status !== null) {
             if ($itiltype === 'ITILSolution') {
                 $status = str_replace('status_', '', $status);
@@ -122,6 +142,28 @@ class TimelineExtension extends AbstractExtension
         }
 
         return $solution_class;
+    }
+
+
+    /**
+     * Returns true if the given entry is private.
+     */
+    public function isPrivate(array $entry = null): bool
+    {
+        return $entry !== null && ($entry['private'] ?? 0) == 1;
+    }
+
+
+    /**
+     * Get ITIL type from the given entry.
+     */
+    public function getItilType(array $entry = null): ?string
+    {
+        if (isset($entry['itiltype'])) {
+            return "ITIL" . $entry['itiltype'];
+        }
+
+        return $entry['type'] ?? null;
     }
 
 

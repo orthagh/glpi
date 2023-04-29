@@ -44,11 +44,9 @@
       {% set entry_object = get_item(entry['type'], entry_i['id']) %}
       {% set users_id = entry_i['users_id'] %}
       {% set entry_rand = random() %}
-      {% set item_position = entry_i['timeline_position']|item_position_class %}
-      {% set itiltype = entry['itiltype'] is defined ? 'ITIL' ~ entry['itiltype'] : entry['type'] %}
-      {% set solution_class = itiltype|solution_class(entry_i['status']) %}
+      {% set item_position = entry|item_position_class %}
 
-      <div class="timeline-item mb-3 {{ itiltype }} {{ entry_i['state']|state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+      <div class="timeline-item mb-3 {{ entry|itiltype }} {{ entry|state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 
@@ -56,14 +54,14 @@
 
          <div class="row">
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
-               {% if entry_i['state'] is constant('Planning::TODO') %}
-                  {% if entry_i['can_edit'] %}
+               {% if entry|is_state_todo %}
+                  {% if entry|can_edit(item) %}
                      <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
                   {% else %}
                      <span class="state state_1" title="{{ __('To do') }}" style="cursor: not-allowed;"></span>
                   {% endif %}
-               {% elseif entry_i['state'] is constant('Planning::DONE') %}
-                  {% if entry_i['can_edit'] %}
+               {% elseif entry|is_state_done %}
+                  {% if entry|can_edit(item) %}
                      <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
                   {% else %}
                      <span class="state state_2" title="{{ __('Done') }}" style="cursor: not-allowed;"></span>
@@ -100,12 +98,12 @@
                {% endif %}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
-               <div class="mt-2 timeline-content {{ solution_class }} flex-grow-1 {{ item_position }} card">
+               <div class="mt-2 timeline-content {{ entry|solution_class }} flex-grow-1 {{ item_position }} card">
                   <div class="card-body px-1 px-xxl-3">
                      {{ include('components/itilobject/timeline/timeline_item_header.html.twig') }}
 
-                     {% if itiltype in timeline_itemtypes|column('type') %}
-                        {% set matching_types = timeline_itemtypes|filter((v) => v.type == itiltype) %}
+                     {% if entry|itiltype in timeline_itemtypes|column('type') %}
+                        {% set matching_types = timeline_itemtypes|filter((v) => v.type == entry|itiltype) %}
                         {% if matching_types|length > 0 %}
                            {% set timeline_itemtype = matching_types|first %}
                            {% if timeline_itemtype.template is defined %}
