@@ -52,8 +52,12 @@ class PDFExport
     {
         switch ($ma->getAction()) {
             case "generate":
-                echo Html::hidden('no_html_header', ['value' => 1]);
-                echo Html::submit(_x('button', 'Generate'), ['name' => 'massiveaction']) . "</span>";
+                $items = $ma->getItems();
+                $itemtype = array_keys($items)[0];
+                $first_id = array_keys($items[$itemtype])[0] ?? 0;
+                $item = new $itemtype();
+                $item->getFromDB($first_id);
+                echo $item->showExportConfigForm();
                 return true;
         }
 

@@ -295,6 +295,7 @@
         }
 
         .content-part {
+            display: flex;
             flex-direction: row-reverse !important;
             justify-content: flex-end;
             margin-left: 75px;

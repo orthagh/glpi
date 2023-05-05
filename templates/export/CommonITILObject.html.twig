@@ -50,12 +50,14 @@
 
     <div class="timeline-item ITILContent">
         <div class="timeline-content mt-2 p-2">
-            <div>
-                <span class="badge badge-outline text-blue">
-                     {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
-                </span>
-                TODO main main_description
+            <div class="timeline-header">
+                <div class="creator">
+                    <span class="badge">
+                        {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+                    </span>
+                </div>
             </div>
+            TODO main main_description
         </div>
     </div>
 {% endmacro %}
@@ -91,41 +93,49 @@
                     {# TODO user picture #}
                 </div>
 
-                <div class="timeline-content mt-2 p-2">
-                    <div>
-                        {% set date_span %}
-                            <span>
-                                <i class="ti ti-clock"></i>
-                                {{ date_creation|formatted_datetime }}
-                            </span>
-                        {% endset %}
+                <div class="content-part">
+                    <div class="timeline-content mt-2 p-2">
+                        <div class="card-body">
+                            <div class="timeline-header">
+                                {% set date_span %}
+                                    <span>
+                                        <i class="ti ti-clock"></i>
+                                        {{ date_creation|formatted_datetime }}
+                                    </span>
+                                {% endset %}
 
-                        {% set creator_span %}
-                            {{ include('components/user/link_with_tooltip.html.twig', {
-                                'users_id': users_id,
-                                'enable_anonymization': is_anonym_user(users_id),
-                                'export': true
-                            }, with_context = false) }}
-                        {% endset %}
+                                {% set creator_span %}
+                                    {{ include('components/user/link_with_tooltip.html.twig', {
+                                        'users_id': users_id,
+                                        'enable_anonymization': is_anonym_user(users_id),
+                                        'export': true
+                                    }, with_context = false) }}
+                                {% endset %}
 
-                        <span class="badge badge-outline text-blue">
-                            {% if users_id > 0 %}
-                                {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
-                            {% else %}
-                                {{ __('Created: %1s')|format(date_span)|raw }}
-                            {% endif %}
-                        </span>
+                                <div class="creator">
+                                    <span class="badge">
+                                        {% if users_id > 0 %}
+                                            {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
+                                        {% else %}
+                                            {{ __('Created: %1s')|format(date_span)|raw }}
+                                        {% endif %}
+                                    </span>
+                                </div>
 
-                        {% if entry['item']['users_id_editor'] and date_creation != date_mod %}
-                            
-                        {% endif %}
+                                {% if entry['item']['users_id_editor'] and date_creation != date_mod %}
 
-                        {% if entry|is_private  %}
-                            <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
-                        {% endif %}
+                                {% endif %}
+
+                                {% if entry|is_private  %}
+                                    <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="read-only-content">
+                                {{ entry['item']['content']|safe_html }}
+                            </div>
+                        </div>
                     </div>
-
-                    {{ entry['item']['content']|safe_html }}
 
                     {# TODO sub documents #}
                 </div>

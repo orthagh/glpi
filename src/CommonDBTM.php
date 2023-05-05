@@ -488,6 +488,14 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    public function showExportConfigForm()
+    {
+        return TemplateRenderer::getInstance()->render('export/generic_config.html.twig', [
+            'tabs' => $this->defineAllTabs(),
+        ]);
+    }
+
+
     public function showExportHtml(): string
     {
         return TemplateRenderer::getInstance()->render('export/generic.html.twig', [
