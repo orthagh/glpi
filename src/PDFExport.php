@@ -88,7 +88,7 @@ class PDFExport
         $head = TemplateRenderer::getInstance()->render('export/parts/header.html.twig', [
             'title'       => 'GLPI PDF Export',
             'css_content' => Html::compileScss([
-                'file' => '/css/pdf_export',
+                'file' => '/css/export',
             ]),
         ]);
         $footer = TemplateRenderer::getInstance()->render('export/parts/footer.html.twig');

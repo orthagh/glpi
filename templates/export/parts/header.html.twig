@@ -3,7 +3,7 @@
 <head>
     <title>{{ title }} - GLPI</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ css_path('css/pdf_export.scss') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ css_path('css/export.scss') }}" />
     {% for css_file in css_files %}
           <link rel="stylesheet" type="text/css" href="{{ css_path(css_file.path, css_file.options ?? []) }}" />
     {% endfor %}
