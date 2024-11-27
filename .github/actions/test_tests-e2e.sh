@@ -8,6 +8,7 @@ export CYPRESS_BASE_URL="http://localhost:80"
 node_modules/.bin/cypress install
 
 # Install chrome
+apt-get install -y wget
 wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt-get install -y ./google-chrome-stable_current_amd64.deb
 chrome --version
