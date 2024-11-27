@@ -260,6 +260,8 @@ jobs:
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-web.sh
+      - name: "Install Chrome"
+        uses: browser-actions/setup-chrome@v1
       - name: "E2E tests"
         if: "${{ success() || failure() }}"
         id: "e2e"

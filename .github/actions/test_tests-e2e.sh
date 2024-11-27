@@ -4,10 +4,6 @@ set -e -u -x -o pipefail
 # Set baseUrl for Cypress in environment variable
 export CYPRESS_BASE_URL="http://localhost:80"
 
-# Install chrome for Cypress
-curl -sO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg -i google-chrome-stable_current_amd64.deb
-
 # Install Cypress
 node_modules/.bin/cypress install
 
