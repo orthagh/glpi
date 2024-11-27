@@ -264,7 +264,7 @@ jobs:
         if: "${{ success() || failure() }}"
         id: "e2e"
         run: |
-          docker compose exec -T app --user root .github/actions/install_chrome.sh
+          docker compose exec --user root -T app .github/actions/install_chrome.sh
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
