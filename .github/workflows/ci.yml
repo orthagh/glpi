@@ -260,11 +260,17 @@ jobs:
     #     if: "${{ success() || failure() }}"
     #     run: |
     #       docker compose exec -T app .github/actions/test_tests-web.sh
-      - name: "E2E tests"
-        if: "${{ success() || failure() }}"
-        id: "e2e"
-        run: |
-          docker compose exec -T app .github/actions/test_tests-e2e.sh
+    #   - name: "E2E tests"
+    #     if: "${{ success() || failure() }}"
+    #     id: "e2e"
+    #     run: |
+    #       docker compose exec -T app .github/actions/test_tests-e2e.sh
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm cypress info
+          start: npm cypress info
+          browser: chrome
       - name: "Upload Cypress screenshots"
         if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
         uses: actions/upload-artifact@v4
