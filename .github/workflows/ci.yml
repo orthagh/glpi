@@ -260,15 +260,10 @@ jobs:
     #     if: "${{ success() || failure() }}"
     #     run: |
     #       docker compose exec -T app .github/actions/test_tests-web.sh
-      - name: "Install chrome"
-        uses: browser-actions/setup-chrome@v1
-        id: setup-chrome
       - name: "E2E tests"
         if: "${{ success() || failure() }}"
         id: "e2e"
         run: |
-          CHROME_PATH=${{ steps.setup-chrome.outputs.chrome-path }}
-          echo "CHROME_PATH: $CHROME_PATH"
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
