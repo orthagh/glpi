@@ -256,10 +256,10 @@ jobs:
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/test_install.sh
-    #   - name: "WEB tests"
-    #     if: "${{ success() || failure() }}"
-    #     run: |
-    #       docker compose exec -T app .github/actions/test_tests-web.sh
+      - name: "WEB tests"
+        if: "${{ success() || failure() }}"
+        run: |
+          docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "E2E tests"
         if: "${{ success() || failure() }}"
         id: "e2e"
