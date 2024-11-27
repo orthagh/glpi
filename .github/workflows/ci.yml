@@ -262,8 +262,6 @@ jobs:
     #       docker compose exec -T app .github/actions/test_tests-web.sh
       - name: "Install chrome"
         uses: browser-actions/setup-chrome@v1
-        run: |
-          echo "Chrome installed"
       - name: "E2E tests"
         if: "${{ success() || failure() }}"
         id: "e2e"
