@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "863d57ce7cd98da370f4e5f0ba3efa94",
+    "content-hash": "14586ceff7da5cb9a8e9c77013ed21c8",
     "packages": [
         {
             "name": "blueimp/jquery-file-upload",
@@ -237,25 +237,25 @@
         },
         {
             "name": "elvanto/litemoji",
-            "version": "4.1.0",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elvanto/litemoji.git",
-                "reference": "b48e23c94abd0b01a41907fff427b28d8513dc2e"
+                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/b48e23c94abd0b01a41907fff427b28d8513dc2e",
-                "reference": "b48e23c94abd0b01a41907fff427b28d8513dc2e",
+                "url": "https://api.github.com/repos/elvanto/litemoji/zipball/42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
+                "reference": "42a3e73f5b17ef93980c484e3630b0eb1ed0a9cf",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "php": ">=7.3"
+                "php": ">=7.4"
             },
             "require-dev": {
-                "milesj/emojibase": "6.1.*",
-                "phpunit/phpunit": "9.4.*"
+                "milesj/emojibase": "15.3.*",
+                "phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "autoload": {
@@ -274,9 +274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elvanto/litemoji/issues",
-                "source": "https://github.com/elvanto/litemoji/tree/4.1.0"
+                "source": "https://github.com/elvanto/litemoji/tree/5.1.0"
             },
-            "time": "2021-11-18T22:21:54+00:00"
+            "time": "2024-09-11T21:55:58+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
@@ -5738,5 +5738,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }
