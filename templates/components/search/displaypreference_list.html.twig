@@ -45,17 +45,15 @@
             {{ inputs.hidden('users_id', users_id, {
                 'data-glpicore-ma-tags': 'common'
             }) }}
-            <a role="button" title='{{ __('Select all') }}' class="btn btn-sm btn-outline me-2" onclick="$('input.form-check-input.massive_action_checkbox[type=checkbox]').prop('checked', true); return false;">
-                <span>{{ __('Select all') }}</span>
+            <a role="button" title='{{ __('Select all') }}' class="btn btn-sm btn-outline me-2" id="select-all-checkboxes">
+                <i class="ti ti-copy-check"></i>
+                <span>{{ __('(Un)select all') }}</span>
             </a>
-            <a role="button" title='{{ __('Unselect all') }}' class="btn btn-sm btn-outline me-2" onclick="$('input.form-check-input.massive_action_checkbox[type=checkbox]').prop('checked', false); return false;">
-                <span>{{ __('Unselect all') }}</span>
-            </a>
-        <div class="row row-cards display-prefs-list pt-2">
+        <div class="row display-prefs-list">
         {% for pref in preferences %}
             {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
             {% set icon = pref['itemtype']|itemtype_icon %}
-            <div class="col-md-6 col-xl-3">
+            {# <div class="col-md-6 col-xl-3">
                 <div class="card card-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
@@ -78,6 +76,33 @@
                         </div>
                     </div>
                 </div>
+            </div> #}
+
+            <div class="col-12 col-lg-6 col-xxl-4 mb-2">
+                <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    {% if massiveactionparams['specific_actions']|length > 0 %}
+                        {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype'], {
+                            'class': 'form-selectgroup-input massive_action_checkbox'
+                        }]) %}
+                    {% endif %}
+                    <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
+                        <span class="me-2 mt-1">
+                            <i class="{{ icon }} fa-2x text-secondary"></i>
+                        </span>
+                        <div class="text-start">
+                            <div class="fw-bold">
+                                {{ name }}
+                            </div>
+                            <small class="form-hint">
+                                {{ pref['nb'] }} {{ __('columns') }}
+                            </small>
+                        </div>
+
+                        <div class="me-2 ms-auto">
+                            <span class="form-selectgroup-check"></span>
+                        </div>
+                    </div>
+                </label>
             </div>
         {% endfor %}
         </div>
@@ -101,6 +126,18 @@
                 modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
                 modal.find('.modal-header h4').text(modal.find('.modal-header h4').text() + ' - ' + itemtype_name);
                 modal.appendTo('body').modal('show');
+            });
+
+                        // (un)toggle all capacities button
+            $('#select-all-checkboxes').on('click', function() {
+                var $checkboxes = $('input.massive_action_checkbox');
+                var $checkedCheckboxes = $checkboxes.filter(':checked');
+                if ($checkedCheckboxes.length === $checkboxes.length) {
+                    $checkboxes.prop('checked', false);
+                } else {
+                    $checkboxes.prop('checked', true);
+                }
+                $checkboxes.trigger('change');
             });
         });
     </script>
