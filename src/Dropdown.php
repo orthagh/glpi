@@ -471,7 +471,7 @@ class Dropdown
                 $p
             );
             $icons = implode('', $icon_array);
-            $output = "<div class='btn-group btn-group-sm' role='group'
+            $output = "<div class='btn-group btn-group-sm shadow-none' role='group'
                 style='width: {$original_width}'>{$output} {$icons}</div>";
         } else {
             $output .= Html::jsAjaxDropdown(
