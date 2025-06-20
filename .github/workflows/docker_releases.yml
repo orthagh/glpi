@@ -8,6 +8,8 @@ jobs:
   trigger-docker-releases:
     name: "Trigger Docker releases"
     uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
-    secrets: inherit
+    secrets:
+        DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
     with:
         glpi-version: "${{ github.event.release.tag_name }}"
