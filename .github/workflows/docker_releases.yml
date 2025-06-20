@@ -2,8 +2,7 @@ name: "Trigger Docker releases"
 
 on:
   release:
-    types:
-      - "published"
+    types: [published]
 
 jobs:
   trigger-docker-releases:
