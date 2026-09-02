@@ -959,16 +959,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.2",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02"
+                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/07ae1085aa58fac19bf1b8ef87478823c6a94d02",
-                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/c86e316ee9f6b636ded5d0fe74f835a9646f835a",
+                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a",
                 "shasum": ""
             },
             "require": {
@@ -978,16 +978,16 @@
                 "ext-libxml": "*",
                 "ext-simplexml": "*",
                 "php": ">=7.4",
-                "seld/jsonlint": "^1.11",
+                "seld/jsonlint": "^1.12",
                 "swaggest/json-schema": "^0.12.43",
-                "symfony/polyfill-php81": "^1.31"
+                "symfony/polyfill-php81": "^1.38"
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.4",
                 "phpstan/phpstan": "^1.12",
                 "phpstan/phpstan-deprecation-rules": "^1.2",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^3.12"
+                "squizlabs/php_codesniffer": "^4.0"
             },
             "bin": [
                 "bin/convert",
@@ -1028,7 +1028,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2025-04-07T14:30:09+00:00"
+            "time": "2026-08-18T13:17:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -5501,16 +5501,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.11.0",
+            "version": "1.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2"
+                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/1748aaf847fc731cfad7725aec413ee46f0cc3a2",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9a90eb5d32d5a500296bf43f946d60246444d5f7",
+                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7",
                 "shasum": ""
             },
             "require": {
@@ -5549,7 +5549,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.11.0"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.12.1"
             },
             "funding": [
                 {
@@ -5561,7 +5561,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-11T14:55:45+00:00"
+            "time": "2026-06-12T11:32:29+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -7528,16 +7528,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.33.0",
+            "version": "v1.38.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
                 "shasum": ""
             },
             "require": {
@@ -7589,7 +7589,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
             },
             "funding": [
                 {
@@ -7609,7 +7609,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-23T08:48:59+00:00"
+            "time": "2026-05-27T06:59:30+00:00"
         },
         {
             "name": "symfony/polyfill-php83",
@@ -14865,5 +14865,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
